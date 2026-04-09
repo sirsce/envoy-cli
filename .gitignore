@@ -1,0 +1,11 @@
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+.DS_Store
+Desktop.ini
+*.prof
+coverage.txt
+.env

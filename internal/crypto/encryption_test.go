@@ -68,6 +68,26 @@ func TestEncryptDecrypt(t *testing.T) {
 	}
 }
 
+func TestEncryptProducesDifferentCiphertexts(t *testing.T) {
+	key, _ := GenerateKey(32)
+	encryptor, _ := NewEncryptor(key)
+	plaintext := []byte("same input")
+
+	encrypted1, err := encryptor.Encrypt(plaintext)
+	if err != nil {
+		t.Fatalf("Encrypt() error = %v", err)
+	}
+
+	encrypted2, err := encryptor.Encrypt(plaintext)
+	if err != nil {
+		t.Fatalf("Encrypt() error = %v", err)
+	}
+
+	if encrypted1 == encrypted2 {
+		t.Error("Encrypting the same plaintext twice should produce different ciphertexts due to random nonce")
+	}
+}
+
 func TestDecryptInvalidData(t *testing.T) {
 	key, _ := GenerateKey(32)
 	encryptor, _ := NewEncryptor(key)

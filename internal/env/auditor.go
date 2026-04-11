@@ -2,6 +2,7 @@ package env
 
 import (
 	"fmt"
+	"sort"
 	"time"
 )
 
@@ -46,6 +47,7 @@ func NewAuditor() *Auditor {
 }
 
 // Audit compares base and updated entry slices and returns audit events.
+// Events are returned in a deterministic order, sorted by key then action.
 func (a *Auditor) Audit(base, updated []Entry) []AuditEvent {
 	baseMap := toEntryMap(base)
 	updatedMap := toEntryMap(updated)
@@ -66,6 +68,13 @@ func (a *Auditor) Audit(base, updated []Entry) []AuditEvent {
 			events = append(events, AuditEvent{Timestamp: ts, Action: AuditActionRemove, Key: key, OldValue: oldVal})
 		}
 	}
+
+	sort.Slice(events, func(i, j int) bool {
+		if events[i].Key != events[j].Key {
+			return events[i].Key < events[j].Key
+		}
+		return events[i].Action < events[j].Action
+	})
 
 	return events
 }

@@ -22,6 +22,9 @@ func (rr *RotationReport) HasRotations() bool {
 	return len(rr.Records) > 0
 }
 
+// rotatedAtFormat is the timestamp layout used in all report output.
+const rotatedAtFormat = "2006-01-02T15:04:05Z"
+
 // WriteText writes a human-readable rotation summary to w.
 func (rr *RotationReport) WriteText(w io.Writer) error {
 	if !rr.HasRotations() {
@@ -31,7 +34,7 @@ func (rr *RotationReport) WriteText(w io.Writer) error {
 	var sb strings.Builder
 	sb.WriteString(fmt.Sprintf("Rotated %d key(s):\n", len(rr.Records)))
 	for _, rec := range rr.Records {
-		sb.WriteString(fmt.Sprintf("  %-30s  %s\n", rec.Key, rec.RotatedAt.Format("2006-01-02T15:04:05Z")))
+		sb.WriteString(fmt.Sprintf("  %-30s  %s\n", rec.Key, rec.RotatedAt.Format(rotatedAtFormat)))
 	}
 	_, err := fmt.Fprint(w, sb.String())
 	return err
@@ -47,7 +50,7 @@ func (rr *RotationReport) WriteJSON(w io.Writer) error {
 	for i, r := range rr.Records {
 		out[i] = jsonRecord{
 			Key:       r.Key,
-			RotatedAt: r.RotatedAt.Format("2006-01-02T15:04:05Z"),
+			RotatedAt: r.RotatedAt.Format(rotatedAtFormat),
 		}
 	}
 	enc := json.NewEncoder(w)

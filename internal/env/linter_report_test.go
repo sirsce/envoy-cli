@@ -66,3 +66,15 @@ func TestLintReport_JSONEmpty(t *testing.T) {
 		t.Errorf("expected empty JSON array '[]', got: %q", out)
 	}
 }
+
+func TestLintReport_TextEmptySlice(t *testing.T) {
+	// Passing an empty (non-nil) slice should behave the same as nil: no violations.
+	r := NewLintReport(ReportFormatText)
+	var sb strings.Builder
+	if err := r.Write(&sb, []LintResult{}); err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if !strings.Contains(sb.String(), "No lint violations") {
+		t.Errorf("expected no-violations message for empty slice, got: %q", sb.String())
+	}
+}

@@ -110,3 +110,12 @@ func TestSyncer_Diff_WithChanges(t *testing.T) {
 		t.Error("expected diffs, got none")
 	}
 }
+
+func TestSyncer_Pull_NotFound(t *testing.T) {
+	syncer, _, _ := newTestSyncer(t)
+
+	// Pulling an environment that has never been pushed should return an error.
+	if err := syncer.Pull("nonexistent"); err == nil {
+		t.Error("expected error when pulling nonexistent environment, got nil")
+	}
+}

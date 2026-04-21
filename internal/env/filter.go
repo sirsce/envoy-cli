@@ -70,3 +70,9 @@ func StripPrefix(entries []Entry, prefix string) []Entry {
 	}
 	return result
 }
+
+// FilterAndStrip is a convenience function that filters entries by key prefix
+// and then strips that prefix from each matching entry's key.
+func FilterAndStrip(entries []Entry, prefix string) []Entry {
+	return StripPrefix(FilterByPrefix(entries, prefix), prefix)
+}
